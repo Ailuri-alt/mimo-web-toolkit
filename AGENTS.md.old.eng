@@ -1,0 +1,87 @@
+# AGENTS.md
+
+MCP Toolkit providing local image generation (ComfyUI + FLUX.1 Schnell) for Xiaomi MiMo Code.
+
+## Current state
+
+Early-stage: only `docs/`, `config/settings.yaml`, `pyproject.toml`, `requirements.txt` (empty). No Python source code exists yet. Directories `mcp_server/`, `workflows/`, `assets/`, `tests/`, `examples/` are planned but missing.
+
+## Stack
+
+- Python 3.11+, black (line-length 88), ruff (line-length 88), mypy (3.11)
+- Target: Windows 10, NVIDIA RTX 3080 10GB VRAM, 32GB RAM
+- ComfyUI + FLUX.1 Schnell running locally (no cloud services allowed)
+- MCP protocol for MiMo Code integration
+
+## Commands
+
+```bash
+python -m mcp_server.server          # start MCP server
+pip install -r requirements.txt      # install deps (currently empty)
+```
+
+No test runner, linter CLI, or CI workflow is configured yet. pyproject.toml declares tool settings for black/ruff/mypy but no scripts or dev-dependencies.
+
+## Architecture (must read before coding)
+
+Follow `docs/ARCHITECTURE.md`. Key structure:
+
+```
+mcp_server/
+  server.py          # MCP server entry, no business logic
+  registry.py        # tool registration (auto-discovery at startup)
+  tools/             # one file per MCP tool
+  services/
+    comfy_client.py  # SOLE HTTP interface to ComfyUI
+    prompt_engine.py # YAML templates -> final prompts
+    workflow_engine.py # selects ComfyUI JSON workflow
+    image_processor.py
+  models/            # dataclasses for requests/responses
+  config_manager.py  # loads YAML config
+  logger.py
+  exceptions.py      # WorkflowError, ComfyConnectionError, etc.
+```
+
+## Hard rules
+
+- **pathlib only** -- `os.path` is banned
+- **YAML for config/prompts/workflows** -- no hardcoded paths, sizes, prompts, or workflow JSON in Python
+- **ComfyUI access**: only through `comfy_client.py`. No other module may make HTTP requests to ComfyUI
+- **Prompt templates** in `config/prompts.yaml`. Changing generation quality must not require Python code changes
+- **Workflows** as JSON files in `workflows/`, not embedded in code
+- **Logging**: use `logging` module with named loggers, never `print()`
+- **Type hints** on all public functions
+- **Dataclasses** for structured data (ImageRequest, WorkflowInfo, etc.)
+- Pydantic only where input validation is genuinely needed
+- Each MCP tool = one independent module with one responsibility
+- No `except: pass`, no stubs/TODOs without explanation, no pseudocode
+- Files: max ~300 lines ideal, 500 acceptable. Functions: 10-30 lines ideal
+
+## MCP tool contract
+
+All tools return `{ "success": bool, "result": ..., "error": {"type": str, "message": str} | null }`.
+
+12 tools planned: `generate_image`, `generate_logo`, `generate_icons`, `generate_background`, `generate_team_photo`, `generate_product_image`, `remove_background`, `optimize_image`, `upscale_image`, `describe_image`, `create_favicon`, `convert_svg`. See `docs/MCP_TOOLS.md` for schemas.
+
+`generate_image` uses a high-level interface (`purpose`, `subject`, `style`, `aspect_ratio`) that internally selects prompt template, workflow, resolution, sampler, scheduler, CFG, steps, and negative prompt.
+
+## Development workflow
+
+Follow the staged roadmap in `docs/ROADMAP.md` (20 stages). Each stage must end in a fully working state. Never skip stages. Before each stage: explain architecture, show file tree, then write complete files.
+
+## Docs index
+
+All in `docs/`:
+
+| File | Purpose |
+|------|---------|
+| PROJECT_SPEC.md | Requirements, constraints, quality bar |
+| ARCHITECTURE.md | Components, data flow, principles |
+| ROADMAP.md | 20-stage dev plan, must follow order |
+| CODING_STANDARDS.md | Style, naming, imports, exceptions |
+| CONTRIBUTING.md | Change process, AI agent rules |
+| AI_AGENT_GUIDE.md | Agent behavior rules, prohibited actions |
+| MCP_TOOLS.md | Tool schemas and contracts |
+| PROJECT_STRUCTURE.md | Directory layout, where files go |
+| COMFYUI_SETUP.md | ComfyUI installation |
+| MODEL_PROVIDERS.md | Model provider info |

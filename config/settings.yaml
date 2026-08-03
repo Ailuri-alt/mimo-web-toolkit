@@ -1,0 +1,14 @@
+hardware:
+  gpu:
+    name: "RTX 3080"
+    vram_gb: 10
+
+  ram_gb: 32
+
+
+generation:
+  max_parallel_jobs: 1
+
+  comfyui:
+    low_vram: true
+    cpu_offload: true

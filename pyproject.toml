@@ -1,0 +1,16 @@
+# pyproject.toml
+
+[project]
+name = "mimo-web-toolkit"
+version = "0.1.0"
+description = "MCP Toolkit for Xiaomi MiMo Code with local image generation"
+requires-python = ">=3.11"
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+
+[tool.mypy]
+python_version = "3.11"
