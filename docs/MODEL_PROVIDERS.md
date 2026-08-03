@@ -110,7 +110,7 @@ class ImageProvider:
 
 В проект добавляется:
 
-```text id="d2h8jo"
+```text
 mcp_server/
 
 └── services/
@@ -121,7 +121,7 @@ mcp_server/
         ├── base.py
         ├── flux_provider.py
         ├── sdxl_provider.py
-        └── registry.py
+        └── provider_registry.py
 ```
 
 ---

@@ -230,9 +230,11 @@ mimo-web-toolkit/
 ├── config/
 ├── workflows/
 ├── assets/
+├── cache/
 ├── mcp_server/
 ├── examples/
 ├── tests/
+├── scripts/
 └── docs/
 ```
 
@@ -242,17 +244,30 @@ mimo-web-toolkit/
 - config — настройки и шаблоны
 - workflows — ComfyUI workflow
 - assets — изображения
+- cache — кэш генерации
 - examples — примеры сайтов
 - tests — тесты
+- scripts — вспомогательные скрипты
 
 ---
 
 # Документация
 
-Основные документы:
+## Точка входа для AI-агентов
+
+**AI-агенты обязаны начинать работу с файла:**
+
+```
+AI_CONTEXT.md
+```
+
+---
+
+## Основные документы
 
 | Файл                | Назначение                 |
 | ------------------- | -------------------------- |
+| AI_CONTEXT.md       | Точка входа для AI-агентов |
 | PROJECT_SPEC.md     | Требования проекта         |
 | ARCHITECTURE.md     | Архитектура                |
 | ROADMAP.md          | План разработки            |

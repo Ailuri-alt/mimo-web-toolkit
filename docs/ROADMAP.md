@@ -128,6 +128,24 @@ server.py
 
 # Этап 6
 
+## Provider Layer
+
+Создать слой провайдеров моделей генерации изображений.
+
+Реализовать:
+
+* base.py — базовый интерфейс ImageProvider;
+* flux_provider.py — провайдер для FLUX.1 Schnell/Dev;
+* provider_registry.py — реестр провайдеров.
+
+Правило: Provider никогда не выполняет HTTP-запросы к ComfyUI.
+
+Вся коммуникация через comfy_client.py.
+
+---
+
+# Этап 7
+
 ## Tool generate_image
 
 Создать первый рабочий инструмент.
@@ -144,7 +162,7 @@ server.py
 
 ---
 
-# Этап 7
+# Этап 8
 
 ## Prompt Engine
 
@@ -163,7 +181,7 @@ server.py
 
 ---
 
-# Этап 8
+# Этап 9
 
 ## Workflow Engine
 
@@ -177,7 +195,7 @@ server.py
 
 ---
 
-# Этап 9
+# Этап 10
 
 ## Image Optimizer
 
@@ -192,7 +210,7 @@ server.py
 
 ---
 
-# Этап 10
+# Этап 11
 
 ## Tool generate_logo
 
@@ -200,7 +218,7 @@ server.py
 
 ---
 
-# Этап 11
+# Этап 12
 
 ## Tool generate_icons
 
@@ -208,7 +226,7 @@ server.py
 
 ---
 
-# Этап 12
+# Этап 13
 
 ## Tool generate_background
 
@@ -216,7 +234,15 @@ server.py
 
 ---
 
-# Этап 13
+# Этап 14
+
+## Tool generate_team_photo
+
+Создать генерацию изображений людей и команд.
+
+---
+
+# Этап 15
 
 ## Tool generate_product_image
 
@@ -224,7 +250,7 @@ server.py
 
 ---
 
-# Этап 14
+# Этап 16
 
 ## Tool remove_background
 
@@ -232,7 +258,7 @@ server.py
 
 ---
 
-# Этап 15
+# Этап 17
 
 ## Tool upscale_image
 
@@ -240,7 +266,7 @@ server.py
 
 ---
 
-# Этап 16
+# Этап 18
 
 ## Tool describe_image
 
@@ -252,7 +278,7 @@ server.py
 
 ---
 
-# Этап 17
+# Этап 19
 
 ## Tool create_favicon
 
@@ -260,7 +286,7 @@ server.py
 
 ---
 
-# Этап 18
+# Этап 20
 
 ## Интеграция с MiMo Code
 
@@ -275,7 +301,7 @@ MiMo должна самостоятельно использовать инст
 
 ---
 
-# Этап 19
+# Этап 21
 
 ## Примеры
 
@@ -290,7 +316,7 @@ MiMo должна самостоятельно использовать инст
 
 ---
 
-# Этап 20
+# Этап 22
 
 ## Финальная подготовка
 

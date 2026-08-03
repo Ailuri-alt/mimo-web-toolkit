@@ -113,6 +113,8 @@
 mimo-web-toolkit/
 │
 ├── README.md
+├── AI_CONTEXT.md
+├── AGENTS.md
 ├── LICENSE
 ├── requirements.txt
 ├── .gitignore
@@ -130,6 +132,8 @@ mimo-web-toolkit/
 ├── examples/
 │
 ├── tests/
+│
+├── scripts/
 │
 └── mcp_server/
 ```

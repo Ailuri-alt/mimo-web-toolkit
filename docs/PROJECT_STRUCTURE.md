@@ -29,6 +29,8 @@ mimo-web-toolkit/
 
 │
 ├── README.md
+├── AI_CONTEXT.md
+├── AGENTS.md
 ├── LICENSE
 ├── .gitignore
 ├── requirements.txt
@@ -43,6 +45,8 @@ mimo-web-toolkit/
 ├── workflows/
 │
 ├── assets/
+│
+├── cache/
 │
 ├── examples/
 │
@@ -264,8 +268,20 @@ config/
 
 ```yaml
 hardware:
-  vram_gb: 10
+  gpu:
+    name: "RTX 3080"
+    vram_gb: 10
   ram_gb: 32
+
+comfyui:
+  host: "127.0.0.1"
+  port: 8188
+  timeout: 600
+  low_vram: true
+  cpu_offload: true
+
+generation:
+  max_parallel_jobs: 1
 ```
 
 ---
@@ -363,17 +379,28 @@ tools/
 
 Содержит внутренние сервисы.
 
-Пример:
+Структура:
 
 ```text
 services/
 
-├── comfy_client.py
+├── providers/
+│   ├── __init__.py
+│   ├── base.py
+│   ├── flux_provider.py
+│   ├── sdxl_provider.py
+│   └── provider_registry.py
+│
+├── comfy/
+│   └── comfy_client.py
+│
 ├── prompt_engine.py
 ├── workflow_engine.py
 ├── image_processor.py
 └── queue_manager.py
 ```
+
+---
 
 ---
 

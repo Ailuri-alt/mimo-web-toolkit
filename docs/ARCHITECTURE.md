@@ -160,7 +160,33 @@ JSON Workflow.
 
 ---
 
-## 7. Image Optimizer
+## 7. Provider Layer
+
+Отвечает за взаимодействие с конкретной моделью генерации изображений.
+
+Provider скрывает:
+
+* название модели;
+* формат файлов;
+* параметры запуска;
+* особенности VRAM;
+* специальные настройки.
+
+**Правило:** Provider никогда не выполняет HTTP-запросы.
+
+Вся коммуникация с ComfyUI осуществляется через `comfy_client.py`.
+
+Направление зависимостей:
+
+```text
+Tools → Services → Providers → Comfy Client → HTTP → ComfyUI
+```
+
+Обратные зависимости запрещены.
+
+---
+
+## 8. Image Optimizer
 
 После получения изображения:
 
@@ -172,7 +198,7 @@ JSON Workflow.
 
 ---
 
-## 8. Logging System
+## 9. Logging System
 
 Все компоненты используют единую систему логирования.
 
@@ -180,7 +206,7 @@ JSON Workflow.
 
 ---
 
-## 9. Exceptions
+## 10. Exceptions
 
 Используются специализированные исключения.
 
@@ -223,14 +249,22 @@ mimo-web-toolkit/
 ├── mcp_server/
 │   ├── server.py
 │   ├── registry.py
-│   ├── comfy_client.py
-│   ├── prompt_engine.py
-│   ├── workflow_engine.py
-│   ├── image_tools.py
-│   ├── optimizer.py
-│   ├── config.py
+│   ├── config_manager.py
 │   ├── logger.py
-│   └── exceptions.py
+│   ├── exceptions.py
+│   │
+│   ├── tools/
+│   │
+│   ├── services/
+│   │   ├── providers/
+│   │   ├── comfy/
+│   │   ├── prompt_engine.py
+│   │   ├── workflow_engine.py
+│   │   ├── image_processor.py
+│   │   └── queue_manager.py
+│   │
+│   └── models/
+├── scripts/
 ├── tests/
 └── workflows/
 ```
@@ -253,6 +287,7 @@ mimo-web-toolkit/
 ├── mcp_server/
 ├── workflows/
 ├── assets/
+├── cache/
 ├── examples/
 ├── tests/
 └── scripts/
