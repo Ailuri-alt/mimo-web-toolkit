@@ -16,6 +16,8 @@ logger = get_logger(__name__)
 
 DEFAULT_CONFIG_DIR = Path(__file__).resolve().parent.parent / "config"
 DEFAULT_SETTINGS_FILE = "settings.yaml"
+DEFAULT_PROMPTS_FILE = "prompts.yaml"
+DEFAULT_WORKFLOWS_FILE = "workflows.yaml"
 
 
 class ConfigManager:
@@ -38,6 +40,8 @@ class ConfigManager:
         """
         self.config_dir = config_dir or DEFAULT_CONFIG_DIR
         self.settings: dict[str, Any] = {}
+        self.prompts: dict[str, Any] = {}
+        self.workflows: dict[str, Any] = {}
         logger.info("ConfigManager инициализирован: %s", self.config_dir)
 
     def load_settings(self, filename: str = DEFAULT_SETTINGS_FILE) -> dict[str, Any]:
@@ -109,3 +113,112 @@ class ConfigManager:
         if isinstance(value, dict):
             return value
         return {}
+
+    def load_prompts(self, filename: str = DEFAULT_PROMPTS_FILE) -> dict[str, Any]:
+        """Загружает файл шаблонов промптов.
+
+        Args:
+            filename: Имя YAML-файла с шаблонами.
+
+        Returns:
+            Словарь с шаблонами промптов.
+
+        Raises:
+            ConfigurationError: Если файл не найден или содержит ошибки.
+        """
+        filepath = self.config_dir / filename
+
+        if not filepath.exists():
+            raise ConfigurationError(f"Файл промптов не найден: {filepath}")
+
+        try:
+            with open(filepath, encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+        except yaml.YAMLError as e:
+            raise ConfigurationError(f"Ошибка парсинга YAML: {e}") from e
+
+        if not isinstance(data, dict):
+            raise ConfigurationError(
+                f"Файл промптов должен содержать словарь: {filepath}"
+            )
+
+        self.prompts = data
+        logger.info("Промпты загружены: %s", filepath)
+        return self.prompts
+
+    def load_workflows(self, filename: str = DEFAULT_WORKFLOWS_FILE) -> dict[str, Any]:
+        """Загружает файл соответствий workflow.
+
+        Args:
+            filename: Имя YAML-файла с workflow.
+
+        Returns:
+            Словарь с соответствиями workflow.
+
+        Raises:
+            ConfigurationError: Если файл не найден или содержит ошибки.
+        """
+        filepath = self.config_dir / filename
+
+        if not filepath.exists():
+            raise ConfigurationError(f"Файл workflow не найден: {filepath}")
+
+        try:
+            with open(filepath, encoding="utf-8") as f:
+                data = yaml.safe_load(f)
+        except yaml.YAMLError as e:
+            raise ConfigurationError(f"Ошибка парсинга YAML: {e}") from e
+
+        if not isinstance(data, dict):
+            raise ConfigurationError(
+                f"Файл workflow должен содержать словарь: {filepath}"
+            )
+
+        self.workflows = data
+        logger.info("Workflow загружены: %s", filepath)
+        return self.workflows
+
+    def get_prompt_template(self, purpose: str) -> dict[str, str]:
+        """Возвращает шаблон промпта для указанного типа изображения.
+
+        Args:
+            purpose: Тип изображения (hero, product, portrait и т.д.).
+
+        Returns:
+            Словарь с template и negative.
+
+        Raises:
+            ConfigurationError: Если шаблон не найден.
+        """
+        template = self.prompts.get(purpose)
+        if template is None:
+            raise ConfigurationError(f"Шаблон промпта не найден для: {purpose}")
+        return template
+
+    def get_workflow_config(self, purpose: str) -> dict[str, Any]:
+        """Возвращает конфигурацию workflow для указанного типа изображения.
+
+        Args:
+            purpose: Тип изображения (hero, product, portrait и т.д.).
+
+        Returns:
+            Словарь с настройками workflow.
+
+        Raises:
+            ConfigurationError: Если конфигурация не найдена.
+        """
+        config = self.workflows.get(purpose)
+        if config is None:
+            raise ConfigurationError(f"Конфигурация workflow не найдена для: {purpose}")
+        return config
+
+    def load_all(self) -> None:
+        """Загружает все файлы конфигурации.
+
+        Raises:
+            ConfigurationError: Если любой из файлов не найден или содержит ошибки.
+        """
+        self.load_settings()
+        self.load_prompts()
+        self.load_workflows()
+        logger.info("Вся конфигурация загружена")

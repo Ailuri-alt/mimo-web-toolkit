@@ -1,0 +1,84 @@
+# Соответствие типов изображений и workflow ComfyUI
+# Каждый тип изображения использует свой workflow
+# Workflow хранятся как JSON-файлы в workflows/flux/
+
+hero:
+  workflow: workflows/flux/hero.json
+  default_style: photorealistic
+  default_aspect_ratio: "16:9"
+  sampler: euler
+  scheduler: normal
+  cfg: 7.0
+  steps: 20
+
+product:
+  workflow: workflows/flux/product.json
+  default_style: studio photography
+  default_aspect_ratio: "1:1"
+  sampler: euler
+  scheduler: normal
+  cfg: 7.0
+  steps: 20
+
+portrait:
+  workflow: workflows/flux/portrait.json
+  default_style: photorealistic
+  default_aspect_ratio: "3:4"
+  sampler: euler
+  scheduler: normal
+  cfg: 7.0
+  steps: 20
+
+background:
+  workflow: workflows/flux/background.json
+  default_style: minimal
+  default_aspect_ratio: "16:9"
+  sampler: euler
+  scheduler: normal
+  cfg: 7.0
+  steps: 15
+
+logo:
+  workflow: workflows/flux/logo.json
+  default_style: minimal
+  default_aspect_ratio: "1:1"
+  sampler: euler
+  scheduler: normal
+  cfg: 7.0
+  steps: 20
+
+icons:
+  workflow: workflows/flux/icons.json
+  default_style: outline
+  default_aspect_ratio: "1:1"
+  sampler: euler
+  scheduler: normal
+  cfg: 7.0
+  steps: 15
+
+illustration:
+  workflow: workflows/flux/illustration.json
+  default_style: digital art
+  default_aspect_ratio: "16:9"
+  sampler: euler
+  scheduler: normal
+  cfg: 7.0
+  steps: 20
+
+team_photo:
+  workflow: workflows/flux/team_photo.json
+  default_style: professional
+  default_aspect_ratio: "16:9"
+  sampler: euler
+  scheduler: normal
+  cfg: 7.0
+  steps: 20
+
+favicon:
+  workflow: workflows/flux/favicon.json
+  default_style: minimal
+  default_aspect_ratio: "1:1"
+  sampler: euler
+  scheduler: normal
+  cfg: 7.0
+  steps: 15

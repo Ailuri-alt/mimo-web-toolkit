@@ -1,0 +1,82 @@
+# Шаблоны промптов для генерации изображений
+# Все промпты хранятся здесь, а не в Python-коде
+# Изменение качества генерации не требует правки кода
+
+hero:
+  template: |
+    A professional hero banner image of {subject}.
+    Style: {style}.
+    High quality, detailed, suitable for website header.
+    aspect_ratio: {aspect_ratio}
+  negative: |
+    blurry, low quality, distorted, deformed, text, watermark
+
+product:
+  template: |
+    A professional product photography of {subject}.
+    Studio lighting, clean background, commercial quality.
+    Style: {style}.
+    aspect_ratio: {aspect_ratio}
+  negative: |
+    blurry, low quality, cluttered background, text, watermark
+
+portrait:
+  template: |
+    A professional portrait of {subject}.
+    Natural lighting, high detail, realistic.
+    Style: {style}.
+    aspect_ratio: {aspect_ratio}
+  negative: |
+    blurry, low quality, distorted face, deformed, text, watermark
+
+background:
+  template: |
+    A seamless background image of {subject}.
+    Clean, minimal, suitable for website background.
+    Style: {style}.
+    aspect_ratio: {aspect_ratio}
+  negative: |
+    blurry, low quality, cluttered, text, watermark, people
+
+logo:
+  template: |
+    A modern logo design for {subject}.
+    Clean, professional, memorable.
+    Style: {style}.
+    Simple, scalable, suitable for web use.
+  negative: |
+    blurry, low quality, complex, cluttered, text, photorealistic
+
+icons:
+  template: |
+    A set of {count} professional icons for {theme}.
+    Consistent style, clean lines, suitable for web interface.
+    Style: {style}.
+  negative: |
+    blurry, low quality, inconsistent, cluttered, text
+
+illustration:
+  template: |
+    A professional illustration of {subject}.
+    Creative, detailed, suitable for website content.
+    Style: {style}.
+    aspect_ratio: {aspect_ratio}
+  negative: |
+    blurry, low quality, photorealistic, text, watermark
+
+team_photo:
+  template: |
+    A professional photo of {subject} team.
+    Natural, friendly, corporate style.
+    High quality, suitable for website team section.
+    aspect_ratio: {aspect_ratio}
+  negative: |
+    blurry, low quality, distorted faces, deformed, text, watermark
+
+favicon:
+  template: |
+    A simple favicon icon for {subject}.
+    Square format, clean design, recognizable at small sizes.
+    Style: {style}.
+  negative: |
+    blurry, low quality, complex, detailed, text, photorealistic

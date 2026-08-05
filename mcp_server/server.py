@@ -42,8 +42,8 @@ class MCPServer:
         и начинает обработку входящих запросов.
         """
         logger.info("Запуск MCP Server...")
-        self.config.load_settings()
-        logger.info("Конфигурация загружена")
+        self.config.load_all()
+        logger.info("Конфигурация загружена: settings, prompts, workflows")
         logger.info("MCP Server готов к работе")
 
     def stop(self) -> None:
