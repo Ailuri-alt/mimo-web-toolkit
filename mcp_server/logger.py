@@ -31,6 +31,7 @@ def setup_logging(
 
     Создаёт корневой логгер mcp_server с консольным и файловым обработчиками.
     Файловые логи автоматически ротируются при достижении MAX_LOG_SIZE_MB.
+    Повторный вызов безопасен — handlers не дублируются.
 
     Args:
         level: Уровень логирования. Поддерживаются:
@@ -41,12 +42,13 @@ def setup_logging(
     """
     global _logs_initialized, _logs_dir
 
-    if _logs_initialized:
+    root_logger = logging.getLogger("mcp_server")
+
+    if _logs_initialized or len(root_logger.handlers) > 0:
+        root_logger.setLevel(logging.DEBUG)
         return
 
     _logs_dir = log_dir or DEFAULT_LOGS_DIR
-
-    root_logger = logging.getLogger("mcp_server")
     root_logger.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter(LOG_FORMAT, datefmt=LOG_DATE_FORMAT)
@@ -74,6 +76,7 @@ def get_logger(name: str) -> logging.Logger:
     """Возвращает именованный логгер.
 
     Логгер автоматически наследует обработчики от корневого логгера mcp_server.
+    Если имя уже содержит префикс mcp_server, он не дублируется.
 
     Args:
         name: Имя логгера (обычно __name__ модуля).
@@ -81,4 +84,6 @@ def get_logger(name: str) -> logging.Logger:
     Returns:
         Экземпляр logging.Logger с префиксом mcp_server.
     """
+    if name.startswith("mcp_server."):
+        name = name[len("mcp_server."):]
     return logging.getLogger(f"mcp_server.{name}")
