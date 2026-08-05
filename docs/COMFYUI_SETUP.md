@@ -236,16 +236,21 @@ config/settings.yaml
 будет:
 
 ```yaml
+hardware:
+  gpu:
+    name: "RTX 3080"
+    vram_gb: 10
+  ram_gb: 32
+
 comfyui:
+  host: "127.0.0.1"
+  port: 8188
+  timeout: 600
+  low_vram: true
+  cpu_offload: true
 
-  host:
-    127.0.0.1
-
-  port:
-    8188
-
-  timeout:
-    600
+generation:
+  max_parallel_jobs: 1
 ```
 
 ---
