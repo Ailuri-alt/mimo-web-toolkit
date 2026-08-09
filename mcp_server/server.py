@@ -10,10 +10,20 @@ MCP Server не содержит бизнес-логики генерации и
 Его задача — координация.
 """
 
+import asyncio
+
+from mcp import types
+from mcp.server import Server
+from mcp.server.stdio import stdio_server
+
 from mcp_server.config_manager import ConfigManager
 from mcp_server.logger import get_logger, setup_logging
+from mcp_server.registry import ToolRegistry
 
 logger = get_logger(__name__)
+
+APP_NAME = "mimo-web-toolkit"
+APP_VERSION = "0.1.0"
 
 
 class MCPServer:
@@ -24,6 +34,8 @@ class MCPServer:
 
     Attributes:
         config: Менеджер конфигурации.
+        registry: Реестр MCP-инструментов.
+        server: Экземпляр mcp.server.Server.
     """
 
     def __init__(self, config: ConfigManager | None = None) -> None:
@@ -33,18 +45,53 @@ class MCPServer:
             config: Менеджер конфигурации. Если None — создаётся новый.
         """
         self.config = config or ConfigManager()
+        self.registry = ToolRegistry()
+        self.server = Server(APP_NAME, version=APP_VERSION)
+        self._setup_handlers()
         logger.info("MCPServer инициализирован")
+
+    def _setup_handlers(self) -> None:
+        """Настраивает обработчики MCP-запросов."""
+        registry = self.registry
+
+        async def handle_list_tools(
+            ctx: object, params: types.PaginatedRequestParams
+        ) -> types.ListToolsResult:
+            return types.ListToolsResult(tools=registry.list_tools())
+
+        async def handle_call_tool(
+            ctx: object, params: types.CallToolRequestParams
+        ) -> types.CallToolResult:
+            return await registry.call_tool(params.name, params.arguments or {})
+
+        self.server.add_request_handler(
+            "tools/list", types.PaginatedRequestParams, handle_list_tools
+        )
+        self.server.add_request_handler(
+            "tools/call", types.CallToolRequestParams, handle_call_tool
+        )
+        logger.info("Обработчики MCP зарегистрированы")
 
     def start(self) -> None:
         """Запускает MCP Server.
 
         Загружает конфигурацию, регистрирует инструменты
-        и начинает обработку входящих запросов.
+        и начинает обработку входящих запросов через stdio.
         """
         logger.info("Запуск MCP Server...")
         self.config.load_all()
         logger.info("Конфигурация загружена: settings, prompts, workflows")
         logger.info("MCP Server готов к работе")
+        asyncio.run(self._run())
+
+    async def _run(self) -> None:
+        """Запускает MCP Server в режиме stdio."""
+        async with stdio_server() as (read_stream, write_stream):
+            await self.server.run(
+                read_stream,
+                write_stream,
+                self.server.create_initialization_options(),
+            )
 
     def stop(self) -> None:
         """Останавливает MCP Server."""
