@@ -19,6 +19,8 @@ from mcp.server.stdio import stdio_server
 from mcp_server.config_manager import ConfigManager
 from mcp_server.logger import get_logger, setup_logging
 from mcp_server.registry import ToolRegistry
+from mcp_server.tools.generate_image import handler as generate_image_handler
+from mcp_server.tools.generate_image import INPUT_SCHEMA as generate_image_schema
 
 logger = get_logger(__name__)
 
@@ -47,8 +49,19 @@ class MCPServer:
         self.config = config or ConfigManager()
         self.registry = ToolRegistry()
         self.server = Server(APP_NAME, version=APP_VERSION)
+        self._register_tools()
         self._setup_handlers()
         logger.info("MCPServer инициализирован")
+
+    def _register_tools(self) -> None:
+        """Регистрирует MCP-инструменты."""
+        self.registry.register(
+            name="generate_image",
+            description="Универсальная генерация изображений",
+            input_schema=generate_image_schema,
+            handler=generate_image_handler,
+        )
+        logger.info("Инструменты зарегистрированы")
 
     def _setup_handlers(self) -> None:
         """Настраивает обработчики MCP-запросов."""
