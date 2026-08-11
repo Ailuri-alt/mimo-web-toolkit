@@ -19,6 +19,8 @@ from mcp.server.stdio import stdio_server
 from mcp_server.config_manager import ConfigManager
 from mcp_server.logger import get_logger, setup_logging
 from mcp_server.registry import ToolRegistry
+from mcp_server.tools.describe_image import handler as describe_image_handler
+from mcp_server.tools.describe_image import INPUT_SCHEMA as describe_image_schema
 from mcp_server.tools.generate_background import handler as generate_background_handler
 from mcp_server.tools.generate_background import INPUT_SCHEMA as generate_background_schema
 from mcp_server.tools.generate_icons import handler as generate_icons_handler
@@ -31,6 +33,10 @@ from mcp_server.tools.generate_product_image import handler as generate_product_
 from mcp_server.tools.generate_product_image import INPUT_SCHEMA as generate_product_image_schema
 from mcp_server.tools.generate_team_photo import handler as generate_team_photo_handler
 from mcp_server.tools.generate_team_photo import INPUT_SCHEMA as generate_team_photo_schema
+from mcp_server.tools.remove_background import handler as remove_background_handler
+from mcp_server.tools.remove_background import INPUT_SCHEMA as remove_background_schema
+from mcp_server.tools.upscale_image import handler as upscale_image_handler
+from mcp_server.tools.upscale_image import INPUT_SCHEMA as upscale_image_schema
 
 logger = get_logger(__name__)
 
@@ -100,6 +106,24 @@ class MCPServer:
             description="Создание изображений товаров",
             input_schema=generate_product_image_schema,
             handler=generate_product_image_handler,
+        )
+        self.registry.register(
+            name="remove_background",
+            description="Удаление фона изображения",
+            input_schema=remove_background_schema,
+            handler=remove_background_handler,
+        )
+        self.registry.register(
+            name="upscale_image",
+            description="Увеличение разрешения изображения",
+            input_schema=upscale_image_schema,
+            handler=upscale_image_handler,
+        )
+        self.registry.register(
+            name="describe_image",
+            description="Анализ изображения",
+            input_schema=describe_image_schema,
+            handler=describe_image_handler,
         )
         logger.info("Инструменты зарегистрированы")
 
