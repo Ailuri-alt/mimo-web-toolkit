@@ -27,6 +27,8 @@ from mcp_server.tools.generate_image import handler as generate_image_handler
 from mcp_server.tools.generate_image import INPUT_SCHEMA as generate_image_schema
 from mcp_server.tools.generate_logo import handler as generate_logo_handler
 from mcp_server.tools.generate_logo import INPUT_SCHEMA as generate_logo_schema
+from mcp_server.tools.generate_product_image import handler as generate_product_image_handler
+from mcp_server.tools.generate_product_image import INPUT_SCHEMA as generate_product_image_schema
 from mcp_server.tools.generate_team_photo import handler as generate_team_photo_handler
 from mcp_server.tools.generate_team_photo import INPUT_SCHEMA as generate_team_photo_schema
 
@@ -92,6 +94,12 @@ class MCPServer:
             description="Создание изображений людей и команд",
             input_schema=generate_team_photo_schema,
             handler=generate_team_photo_handler,
+        )
+        self.registry.register(
+            name="generate_product_image",
+            description="Создание изображений товаров",
+            input_schema=generate_product_image_schema,
+            handler=generate_product_image_handler,
         )
         logger.info("Инструменты зарегистрированы")
 
