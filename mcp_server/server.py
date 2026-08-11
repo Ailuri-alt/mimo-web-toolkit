@@ -21,6 +21,8 @@ from mcp_server.logger import get_logger, setup_logging
 from mcp_server.registry import ToolRegistry
 from mcp_server.tools.generate_image import handler as generate_image_handler
 from mcp_server.tools.generate_image import INPUT_SCHEMA as generate_image_schema
+from mcp_server.tools.generate_logo import handler as generate_logo_handler
+from mcp_server.tools.generate_logo import INPUT_SCHEMA as generate_logo_schema
 
 logger = get_logger(__name__)
 
@@ -60,6 +62,12 @@ class MCPServer:
             description="Универсальная генерация изображений",
             input_schema=generate_image_schema,
             handler=generate_image_handler,
+        )
+        self.registry.register(
+            name="generate_logo",
+            description="Создание логотипов",
+            input_schema=generate_logo_schema,
+            handler=generate_logo_handler,
         )
         logger.info("Инструменты зарегистрированы")
 
