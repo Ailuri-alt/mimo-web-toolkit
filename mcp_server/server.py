@@ -19,6 +19,8 @@ from mcp.server.stdio import stdio_server
 from mcp_server.config_manager import ConfigManager
 from mcp_server.logger import get_logger, setup_logging
 from mcp_server.registry import ToolRegistry
+from mcp_server.tools.generate_icons import handler as generate_icons_handler
+from mcp_server.tools.generate_icons import INPUT_SCHEMA as generate_icons_schema
 from mcp_server.tools.generate_image import handler as generate_image_handler
 from mcp_server.tools.generate_image import INPUT_SCHEMA as generate_image_schema
 from mcp_server.tools.generate_logo import handler as generate_logo_handler
@@ -68,6 +70,12 @@ class MCPServer:
             description="Создание логотипов",
             input_schema=generate_logo_schema,
             handler=generate_logo_handler,
+        )
+        self.registry.register(
+            name="generate_icons",
+            description="Создание набора иконок",
+            input_schema=generate_icons_schema,
+            handler=generate_icons_handler,
         )
         logger.info("Инструменты зарегистрированы")
 
