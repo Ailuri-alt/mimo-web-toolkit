@@ -19,6 +19,8 @@ from mcp.server.stdio import stdio_server
 from mcp_server.config_manager import ConfigManager
 from mcp_server.logger import get_logger, setup_logging
 from mcp_server.registry import ToolRegistry
+from mcp_server.tools.generate_background import handler as generate_background_handler
+from mcp_server.tools.generate_background import INPUT_SCHEMA as generate_background_schema
 from mcp_server.tools.generate_icons import handler as generate_icons_handler
 from mcp_server.tools.generate_icons import INPUT_SCHEMA as generate_icons_schema
 from mcp_server.tools.generate_image import handler as generate_image_handler
@@ -76,6 +78,12 @@ class MCPServer:
             description="Создание набора иконок",
             input_schema=generate_icons_schema,
             handler=generate_icons_handler,
+        )
+        self.registry.register(
+            name="generate_background",
+            description="Создание фоновых изображений",
+            input_schema=generate_background_schema,
+            handler=generate_background_handler,
         )
         logger.info("Инструменты зарегистрированы")
 
