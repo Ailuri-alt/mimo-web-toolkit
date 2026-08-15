@@ -225,6 +225,7 @@ mypy --version
 
 * конвертацию в WebP/PNG/JPG
 * оптимизацию размера
+* масштабирование изображений (resize, LANCZOS-интерполяция)
 * сохранение в assets/optimized/
 
 ---

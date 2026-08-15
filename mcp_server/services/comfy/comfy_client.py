@@ -151,7 +151,8 @@ class ComfyClient:
     ) -> dict[str, Any]:
         """Ожидает завершения генерации.
 
-        Периодически опрашивает ComfyUI直到 задача будет выполнена.
+        Периодически опрашивает ComfyUI до завершения задачи.
+        Прерывается по таймауту (self.timeout).
 
         Args:
             prompt_id: ID задачи.
@@ -163,9 +164,10 @@ class ComfyClient:
         Raises:
             ComfyRequestError: Если задача не завершилась за timeout.
         """
-        logger.info("Ожидание завершения: prompt_id=%s", prompt_id)
+        logger.info("Ожидание завершения: prompt_id=%s (timeout=%ds)", prompt_id, self.timeout)
 
-        while True:
+        elapsed = 0.0
+        while elapsed < self.timeout:
             history = await self.get_history(prompt_id)
 
             if prompt_id in history:
@@ -173,10 +175,16 @@ class ComfyClient:
                 outputs = entry.get("outputs", {})
 
                 if outputs:
-                    logger.info("Генерация завершена: prompt_id=%s", prompt_id)
+                    logger.info("Генерация завершена: prompt_id=%s (%.1fs)", prompt_id, elapsed)
                     return entry
 
             await asyncio.sleep(poll_interval)
+            elapsed += poll_interval
+
+        raise ComfyRequestError(
+            f"Задача {prompt_id} не завершилась за {self.timeout}с",
+            status_code=408,
+        )
 
     async def get_image(
         self,

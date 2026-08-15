@@ -4,6 +4,7 @@
 - проверку файла;
 - оптимизацию формата;
 - конвертацию в WebP/PNG/JPG;
+- масштабирование изображений (resize, LANCZOS);
 - сохранение результата.
 
 Image Processor НЕ выполняет HTTP-запросы.
@@ -127,6 +128,89 @@ class ImageProcessor:
             input_path.name,
             output_path.name,
             reduction,
+        )
+
+        return output_path
+
+    def resize(
+        self,
+        input_path: Path,
+        scale: int = 2,
+        output_filename: str | None = None,
+        output_format: str | None = None,
+        quality: int | None = None,
+    ) -> Path:
+        """Увеличивает разрешение изображения методом LANCZOS-интерполяции.
+
+        Args:
+            input_path: Путь к входному изображению.
+            scale: Множитель масштабирования (1-4). По умолчанию 2.
+            output_filename: Имя выходного файла. Если None — на основе входного.
+            output_format: Формат выходного файла. Если None — default_format.
+            quality: Качество (1-100). Если None — default_quality.
+
+        Returns:
+            Путь к масштабированному изображению.
+
+        Raises:
+            ImageProcessingError: Если не удалось обработать изображение.
+        """
+        if not input_path.exists():
+            raise ImageProcessingError(f"Файл не найден: {input_path}")
+
+        if not 1 <= scale <= 4:
+            raise ImageProcessingError(
+                f"Множитель масштабирования должен быть 1-4, получен: {scale}"
+            )
+
+        fmt = output_format or self.default_format
+        qual = quality or self.default_quality
+
+        if fmt not in SUPPORTED_FORMATS:
+            raise ImageProcessingError(
+                f"Неподдерживаемый формат: {fmt}. Допустимые: {SUPPORTED_FORMATS}"
+            )
+
+        try:
+            with Image.open(input_path) as img:
+                new_width = img.width * scale
+                new_height = img.height * scale
+                upscaled = img.resize(
+                    (new_width, new_height), Image.Resampling.LANCZOS
+                )
+
+                if fmt in ("jpg", "jpeg") and upscaled.mode in ("RGBA", "P"):
+                    upscaled = upscaled.convert("RGB")
+
+                if output_filename is None:
+                    output_filename = f"{input_path.stem}_x{scale}.{fmt}"
+
+                output_path = self.output_dir / output_filename
+
+                save_kwargs: dict[str, Any] = {}
+                if fmt == "webp":
+                    save_kwargs["quality"] = qual
+                    save_kwargs["method"] = 6
+                elif fmt in ("jpg", "jpeg"):
+                    save_kwargs["quality"] = qual
+                    save_kwargs["optimize"] = True
+                elif fmt == "png":
+                    save_kwargs["optimize"] = True
+
+                pil_format = "JPEG" if fmt in ("jpg", "jpeg") else fmt.upper()
+                upscaled.save(output_path, format=pil_format, **save_kwargs)
+
+        except Exception as e:
+            raise ImageProcessingError(
+                f"Ошибка масштабирования изображения: {e}"
+            ) from e
+
+        logger.info(
+            "Изображение увеличено: %s -> %s (%dx, %s)",
+            input_path.name,
+            output_path.name,
+            scale,
+            fmt,
         )
 
         return output_path

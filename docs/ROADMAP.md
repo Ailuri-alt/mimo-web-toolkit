@@ -203,8 +203,7 @@ server.py
 
 * WebP;
 * PNG;
-* JPG;
-* AVIF (если доступно).
+* JPG.
 
 Оптимизация размера файлов.
 
@@ -254,7 +253,9 @@ server.py
 
 ## Tool remove_background
 
-Удаление фона.
+Конвертация и оптимизация изображения.
+
+v1.0: формат conversion only. AI-удаление фона — v2.0.
 
 ---
 
@@ -262,7 +263,10 @@ server.py
 
 ## Tool upscale_image
 
-Увеличение разрешения изображений.
+Увеличение разрешения изображений методом LANCZOS-интерполяции.
+
+Делегирует обработку в ImageProcessor.resize().
+AI-upscaling не входит в v1.0.
 
 ---
 
@@ -278,11 +282,74 @@ server.py
 
 ---
 
+# Этап 18A
+
+## Tool optimize_image
+
+Оптимизация изображений для веба.
+
+Конвертация форматов (WebP/PNG/JPG), оптимизация размера файла.
+
+Делегирует в ImageProcessor.process().
+
+Каждый инструмент должен сопровождаться pytest-тестами.
+
+---
+
+# Этап 18B
+
+## Tool convert_svg
+
+Конвертация изображений между форматами:
+
+* SVG → PNG;
+* SVG → WebP;
+* PNG → SVG (если поддерживается).
+
+Делегирует в ImageProcessor + cairosvg.
+
+Каждый инструмент должен сопровождаться pytest-тестами.
+
+---
+
 # Этап 19
 
 ## Tool create_favicon
 
 Автоматическое создание favicon.
+
+Изменяет текущий workflow, если потребуется.
+
+Каждый инструмент должен сопровождаться pytest-тестами.
+
+---
+
+# Этап 19A
+
+## Workflow JSON + Тесты
+
+Восполнение инфраструктуры для Этапов 1-19.
+
+### Workflow JSON
+
+Создать JSON-файлы в `workflows/flux/` для каждого purpose:
+
+* hero.json
+* logo.json
+* icons.json
+* background.json
+* team_photo.json
+* product.json
+
+### Тесты
+
+Базовые pytest-тесты для:
+
+* `mcp_server/services/image_processor.py` (process, resize, get_info)
+* `mcp_server/services/prompt_engine.py` (build_prompt)
+* `mcp_server/services/workflow_engine.py` (get_workflow_path, get_generation_params)
+* `mcp_server/services/comfy/comfy_client.py` (mock-based)
+* `mcp_server/tools/` (handler для каждого tool)
 
 ---
 
@@ -295,7 +362,8 @@ server.py
 * регистрацию MCP;
 * вызов инструментов;
 * возврат результатов;
-* обработку ошибок.
+* обработку ошибок;
+* наличие workflow JSON-файлов в `workflows/flux/` для каждого типа генерации.
 
 MiMo должна самостоятельно использовать инструменты.
 
@@ -323,7 +391,7 @@ MiMo должна самостоятельно использовать инст
 Проверить:
 
 * документацию;
-* тесты;
+* тесты (pytest, покрытие всех tools и services);
 * структуру;
 * производительность;
 * обработку ошибок.

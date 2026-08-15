@@ -1,18 +1,19 @@
 """MCP-инструмент upscale_image.
 
-Увеличение разрешения изображения.
-Используется для масштабирования изображений с сохранением качества.
+Увеличение разрешения изображения методом LANCZOS-интерполяции.
+Делегирует обработку в ImageProcessor.resize().
+AI-upscaling не входит в v1.0.
 """
 
 from pathlib import Path
 from typing import Any
 
-from PIL import Image
 from mcp import types
 
 from mcp_server.exceptions import ImageProcessingError
 from mcp_server.logger import get_logger
 from mcp_server.models.image_response import ImageResponse
+from mcp_server.services.image_processor import ImageProcessor
 
 logger = get_logger(__name__)
 
@@ -29,7 +30,7 @@ INPUT_SCHEMA = {
         },
         "scale": {
             "type": "integer",
-            "description": "Множитель масштабирования",
+            "description": "Множитель масштабирования (1-4)",
             "minimum": 1,
             "maximum": 4,
             "default": 2,
@@ -37,8 +38,6 @@ INPUT_SCHEMA = {
     },
     "required": ["image"],
 }
-
-DEFAULT_OUTPUT_DIR = Path("assets/optimized")
 
 
 async def handler(arguments: dict[str, Any]) -> types.CallToolResult:
@@ -64,14 +63,12 @@ async def handler(arguments: dict[str, Any]) -> types.CallToolResult:
         if not input_path.exists():
             raise ImageProcessingError(f"Изображение не найдено: {image}")
 
-        DEFAULT_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-        output_path = DEFAULT_OUTPUT_DIR / filename
-
-        with Image.open(input_path) as img:
-            new_width = img.width * scale
-            new_height = img.height * scale
-            upscaled = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
-            upscaled.save(output_path, format="WEBP", quality=85, method=6)
+        processor = ImageProcessor()
+        output_path = processor.resize(
+            input_path=input_path,
+            scale=scale,
+            output_filename=filename,
+        )
 
         logger.info("Изображение увеличено: %s -> %s (%dx)", input_path.name, output_path.name, scale)
         response = ImageResponse.success(file=output_path)

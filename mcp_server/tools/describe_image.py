@@ -58,21 +58,22 @@ async def handler(arguments: dict[str, Any]) -> types.CallToolResult:
         processor = ImageProcessor()
         info = processor.get_info(input_path)
 
-        response_data = {
-            "success": True,
-            "file": str(input_path),
-            "format": info.get("format"),
-            "mode": info.get("mode"),
-            "width": info.get("width"),
-            "height": info.get("height"),
-            "size_bytes": info.get("size_bytes"),
-            "alt_text": f"Image: {input_path.stem}",
-            "title": f"{input_path.stem}",
-        }
+        response = ImageResponse.success(
+            file=input_path,
+            metadata={
+                "format": info.get("format"),
+                "mode": info.get("mode"),
+                "width": info.get("width"),
+                "height": info.get("height"),
+                "size_bytes": info.get("size_bytes"),
+                "alt_text": f"Image: {input_path.stem}",
+                "title": f"{input_path.stem}",
+            },
+        )
 
         logger.info("describe_image завершён: %s", input_path)
         return types.CallToolResult(
-            content=[types.TextContent(type="text", text=str(response_data))]
+            content=[types.TextContent(type="text", text=str(response.to_dict()))]
         )
 
     except ImageProcessingError as e:
