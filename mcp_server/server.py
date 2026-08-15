@@ -33,6 +33,8 @@ from mcp_server.tools.generate_product_image import handler as generate_product_
 from mcp_server.tools.generate_product_image import INPUT_SCHEMA as generate_product_image_schema
 from mcp_server.tools.generate_team_photo import handler as generate_team_photo_handler
 from mcp_server.tools.generate_team_photo import INPUT_SCHEMA as generate_team_photo_schema
+from mcp_server.tools.optimize_image import handler as optimize_image_handler
+from mcp_server.tools.optimize_image import INPUT_SCHEMA as optimize_image_schema
 from mcp_server.tools.remove_background import handler as remove_background_handler
 from mcp_server.tools.remove_background import INPUT_SCHEMA as remove_background_schema
 from mcp_server.tools.upscale_image import handler as upscale_image_handler
@@ -109,9 +111,15 @@ class MCPServer:
         )
         self.registry.register(
             name="remove_background",
-            description="Удаление фона изображения",
+            description="Конвертация и оптимизация изображения",
             input_schema=remove_background_schema,
             handler=remove_background_handler,
+        )
+        self.registry.register(
+            name="optimize_image",
+            description="Оптимизация изображений для веба",
+            input_schema=optimize_image_schema,
+            handler=optimize_image_handler,
         )
         self.registry.register(
             name="upscale_image",

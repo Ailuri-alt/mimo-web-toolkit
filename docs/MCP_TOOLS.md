@@ -343,8 +343,9 @@ illustration
 
 * WebP;
 * PNG;
-* JPG;
-* AVIF.
+* JPG.
+
+> v1.0: AVIF не реализуется.
 
 ---
 
