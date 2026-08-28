@@ -21,6 +21,8 @@ from mcp_server.logger import get_logger, setup_logging
 from mcp_server.registry import ToolRegistry
 from mcp_server.tools.convert_svg import handler as convert_svg_handler
 from mcp_server.tools.convert_svg import INPUT_SCHEMA as convert_svg_schema
+from mcp_server.tools.create_favicon import handler as create_favicon_handler
+from mcp_server.tools.create_favicon import INPUT_SCHEMA as create_favicon_schema
 from mcp_server.tools.describe_image import handler as describe_image_handler
 from mcp_server.tools.describe_image import INPUT_SCHEMA as describe_image_schema
 from mcp_server.tools.generate_background import handler as generate_background_handler
@@ -80,6 +82,12 @@ class MCPServer:
             description="Конвертация SVG в растровые форматы",
             input_schema=convert_svg_schema,
             handler=convert_svg_handler,
+        )
+        self.registry.register(
+            name="create_favicon",
+            description="Создание favicon.ico и apple-touch-icon.png",
+            input_schema=create_favicon_schema,
+            handler=create_favicon_handler,
         )
         self.registry.register(
             name="generate_image",

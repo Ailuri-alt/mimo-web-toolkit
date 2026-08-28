@@ -2,6 +2,8 @@
 
 from mcp_server.tools.convert_svg import handler as convert_svg
 from mcp_server.tools.convert_svg import INPUT_SCHEMA as CONVERT_SVG_INPUT_SCHEMA
+from mcp_server.tools.create_favicon import handler as create_favicon
+from mcp_server.tools.create_favicon import INPUT_SCHEMA as CREATE_FAVICON_INPUT_SCHEMA
 from mcp_server.tools.describe_image import handler as describe_image
 from mcp_server.tools.describe_image import INPUT_SCHEMA as DESCRIBE_IMAGE_INPUT_SCHEMA
 from mcp_server.tools.generate_background import handler as generate_background
@@ -25,6 +27,7 @@ from mcp_server.tools.upscale_image import INPUT_SCHEMA as UPSCALE_IMAGE_INPUT_S
 
 __all__ = [
     "convert_svg",
+    "create_favicon",
     "describe_image",
     "generate_background",
     "generate_icons",
@@ -36,6 +39,7 @@ __all__ = [
     "remove_background",
     "upscale_image",
     "CONVERT_SVG_INPUT_SCHEMA",
+    "CREATE_FAVICON_INPUT_SCHEMA",
     "DESCRIBE_IMAGE_INPUT_SCHEMA",
     "BACKGROUND_INPUT_SCHEMA",
     "ICONS_INPUT_SCHEMA",
