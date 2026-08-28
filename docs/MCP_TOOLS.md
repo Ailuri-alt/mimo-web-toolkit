@@ -452,15 +452,14 @@ Tool → ImageProcessor.resize() → Pillow/LANCZOS
 
 ## Назначение
 
-Конвертация изображений.
-
----
+Конвертация SVG-изображений в растровые форматы.
 
 ## Поддержка
 
-* PNG → SVG;
 * SVG → PNG;
 * SVG → WebP.
+
+> v1.0: PNG → SVG не реализуется (требует vectorization, запланировано для v2.0).
 
 ---
 

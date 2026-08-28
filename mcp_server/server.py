@@ -19,6 +19,8 @@ from mcp.server.stdio import stdio_server
 from mcp_server.config_manager import ConfigManager
 from mcp_server.logger import get_logger, setup_logging
 from mcp_server.registry import ToolRegistry
+from mcp_server.tools.convert_svg import handler as convert_svg_handler
+from mcp_server.tools.convert_svg import INPUT_SCHEMA as convert_svg_schema
 from mcp_server.tools.describe_image import handler as describe_image_handler
 from mcp_server.tools.describe_image import INPUT_SCHEMA as describe_image_schema
 from mcp_server.tools.generate_background import handler as generate_background_handler
@@ -73,6 +75,12 @@ class MCPServer:
 
     def _register_tools(self) -> None:
         """Регистрирует MCP-инструменты."""
+        self.registry.register(
+            name="convert_svg",
+            description="Конвертация SVG в растровые форматы",
+            input_schema=convert_svg_schema,
+            handler=convert_svg_handler,
+        )
         self.registry.register(
             name="generate_image",
             description="Универсальная генерация изображений",
