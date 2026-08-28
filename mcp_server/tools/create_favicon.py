@@ -75,6 +75,8 @@ async def handler(arguments: dict[str, Any]) -> types.CallToolResult:
         Результат выполнения инструмента.
     """
     try:
+        from PIL import Image as PILImage
+
         source = arguments.get("source", "")
         output_dir = arguments.get("output_dir", str(DEFAULT_OUTPUT_DIR))
 
@@ -106,7 +108,7 @@ async def handler(arguments: dict[str, Any]) -> types.CallToolResult:
         logger.info("favicon.ico создан: %s", favicon_path)
 
         apple_icon = base_img.copy()
-        apple_icon.thumbnail(APPLE_TOUCH_ICON_SIZE, Image.Resampling.LANCZOS)
+        apple_icon.thumbnail(APPLE_TOUCH_ICON_SIZE, PILImage.Resampling.LANCZOS)
         apple_icon_path = output_path / "apple-touch-icon.png"
         apple_icon.save(apple_icon_path, format="PNG")
         logger.info("apple-touch-icon.png создан: %s", apple_icon_path)
